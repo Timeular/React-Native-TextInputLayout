@@ -18,7 +18,8 @@ export default class TextInputLayout extends Component {
         focusColor: React.PropTypes.string,
         labelFontSize: React.PropTypes.number,
         labelText: React.PropTypes.string,
-        checkValid: React.PropTypes.func
+        checkValid: React.PropTypes.func,
+        error: React.PropTypes.bool
     };
     static defaultProps = {
         hintColor: DEFAULT_PLACEHOLDER_COLOR,
@@ -26,7 +27,8 @@ export default class TextInputLayout extends Component {
         focusColor: DEFAULT_LABEL_COLOR,
         labelFontSize: 12,
         labelText: undefined,
-        checkValid: undefined
+        checkValid: undefined,
+        error: false,
     };
 
     state = {
@@ -113,6 +115,10 @@ export default class TextInputLayout extends Component {
             backgroundColor: 'transparent',
             transform: [{translateY: labelTransY}]
         };
+
+        if (props.error != null && props.error != this.state.isError) {
+            this.setState({isError: props.error})
+        }
     }
 
     _onFocus () {
@@ -134,6 +140,8 @@ export default class TextInputLayout extends Component {
         if (this.props.checkValid) {
             let isError = !this.props.checkValid(this._edtText);
             if (this.state.isError !== isError) this.setState({isError});
+        } else if (this.state.isError) {
+            this.setState({isError: false})
         }
         this._oriOnChangeText && this._oriOnChangeText(text);
     }
